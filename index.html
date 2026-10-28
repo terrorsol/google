@@ -104,7 +104,7 @@ footer a { color: #5a5a5a; text-decoration: none } footer a:hover { color: #fff 
   $('w').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !$('done').disabled) $('done').click() })
   $('open').addEventListener('click', () => { $('m').classList.add('on'); show(1) })
   $('havekey').addEventListener('click', (e) => { e.preventDefault(); $('keyrow').hidden = false; $('key').focus() })
-  const goKey = () => { const k = $('key').value.trim().toUpperCase(); if (/^BANK-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(k)) location.href = 'https://terrorsol.github.io/unnamed/app/#/?key=' + encodeURIComponent(k); else $('key').style.borderColor = '#ff4d5e' }
+  const goKey = () => { const k = $('key').value.trim().toUpperCase(); if (/^BANK-[A-Z2-9]{4}-[A-Z2-9]{4}$/.test(k)) location.href = 'https://app.banker.cash/#/?key=' + encodeURIComponent(k); else $('key').style.borderColor = '#ff4d5e' }
   $('keygo').addEventListener('click', goKey); $('key').addEventListener('keydown', (e) => { if (e.key === 'Enter') goKey() }); $('key').addEventListener('input', () => { $('key').style.borderColor = '' })
   $('close').addEventListener('click', () => $('m').classList.remove('on'))
   $('m').addEventListener('click', (e) => { if (e.target === $('m')) $('m').classList.remove('on') })
