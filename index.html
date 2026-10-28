@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BANKER</title>
+<meta name="description" content="The bank that never closes.">
+<meta property="og:title" content="BANKER">
+<meta property="og:description" content="The bank that never closes.">
+<meta property="og:image" content="https://banker.cash/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@bankerdotcash">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root { --bg: #000; --fg: #fff; --dim: #6f6f6f; --line: #222; --green: #2bd46a; --s1: #0b0b0b; color-scheme: dark }
+* { box-sizing: border-box; margin: 0; padding: 0 }
+html, body { height: 100% }
+body { background: var(--bg); color: var(--fg); font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; display: flex; flex-direction: column; min-height: 100dvh; padding: max(16px, env(safe-area-inset-left)) }
+main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px; padding: 40px 16px }
+.mark { width: 128px; height: 128px; color: #fff; opacity: .92 }
+.mark svg { width: 100%; height: 100%; display: block }
+h1 { font-size: 22px; font-weight: 700; letter-spacing: .34em; margin-left: .34em; margin-top: 6px }
+.tag { color: var(--dim); font-size: 13px; letter-spacing: .12em; text-transform: uppercase }
+.btn { appearance: none; border: 0; cursor: pointer; font: inherit; font-weight: 700; font-size: 14px; color: #000; background: var(--green); border-radius: 8px; height: 42px; padding: 0 22px; transition: transform .12s, filter .12s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px }
+.btn:hover { filter: brightness(1.06) } .btn:active { transform: scale(.985) }
+.btn.ghost { background: #000; color: #fff; border: 1px solid #2a2a2a } .btn.ghost:hover { border-color: #555 }
+.btn:disabled { opacity: .4; cursor: not-allowed }
+.btn.w { width: 100%; height: 46px; font-size: 15px }
+#open { margin-top: 10px }
+.count { color: #444; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; min-height: 16px }
+footer { display: flex; justify-content: center; gap: 22px; padding: 16px 4px 10px; color: #3a3a3a; font-size: 12px; letter-spacing: .1em }
+footer a { color: #5a5a5a; text-decoration: none } footer a:hover { color: #fff }
+/* modal */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.86); display: none; align-items: flex-end; justify-content: center; padding: 16px; z-index: 10 }
+.modal.on { display: flex }
+@media (min-width: 560px) { .modal { align-items: center } }
+.box { width: 100%; max-width: 380px; background: var(--s1); border: 1px solid var(--line); border-radius: 16px; padding: 22px; display: flex; flex-direction: column; gap: 16px; position: relative }
+.dots { display: flex; gap: 6px; justify-content: center } .dots i { width: 22px; height: 3px; border-radius: 2px; background: #222 } .dots i.on { background: var(--green) }
+.step { display: none; flex-direction: column; gap: 14px; text-align: center } .step.on { display: flex }
+.step .k { color: var(--dim); font-size: 11px; letter-spacing: .18em; text-transform: uppercase }
+.step h2 { font-size: 20px; font-weight: 700; letter-spacing: -.01em }
+.step p { color: var(--dim); font-size: 13px; line-height: 1.5 }
+.step input { width: 100%; height: 46px; background: #000; border: 1px solid #2a2a2a; border-radius: 8px; color: #fff; font: inherit; font-size: 14px; padding: 0 12px; outline: none; text-align: center } .step input:focus { border-color: var(--green) }
+.err { color: #ff4d5e; font-size: 12px; min-height: 14px }
+.ok .big { font-size: 52px; font-weight: 800; letter-spacing: -.03em; color: var(--green) }
+.x { position: absolute; top: 10px; right: 14px; background: none; border: 0; color: #555; font-size: 22px; cursor: pointer; line-height: 1 }
+.sub { background: none; border: 0; color: #555; font: inherit; font-size: 12px; cursor: pointer; text-decoration: underline }
+</style>
+</head>
+<body>
+<main>
+  <div class="mark" aria-hidden="true">
+    <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M100 22 L178 64 H22 Z"/>
+      <path d="M30 64 H170 V78 H30 Z"/>
+      <path d="M44 78 V140 M60 78 V140"/><path d="M84 78 V140 M100 78 V140"/><path d="M124 78 V140 M140 78 V140"/>
+      <path d="M38 140 H162"/>
+      <path d="M26 150 H174 V164 H26 Z"/>
+      <path d="M20 176 H180"/>
+      <path d="M100 48 l0 8 M96 50 l8 0 M96 54 l8 0" stroke="#2bd46a" stroke-width="3"/>
+    </svg>
+  </div>
+  <h1>BANKER</h1>
+  <div class="tag">the bank that never closes</div>
+  <button class="btn" id="open">Enter the waitlist</button>
+  <div class="count" id="count"></div>
+</main>
+<footer><span>banker.cash</span><a href="https://x.com/bankerdotcash" target="_blank" rel="noreferrer">@bankerdotcash</a></footer>
+
+<div class="modal" id="m" role="dialog" aria-modal="true">
+  <div class="box" id="box">
+    <button class="x" id="close" aria-label="close">×</button>
+    <div class="dots"><i class="on" id="d1"></i><i id="d2"></i><i id="d3"></i></div>
+    <div class="step on" id="s1"><div class="k">1 of 3</div><h2>Follow the bank</h2><p>@bankerdotcash, notifications on.</p><a class="btn w" id="f1" href="https://x.com/intent/follow?screen_name=bankerdotcash" target="_blank" rel="noreferrer">Follow on X</a><button class="sub" id="n1">I already follow</button></div>
+    <div class="step" id="s2"><div class="k">2 of 3</div><h2>Like + repost the latest post</h2><p>It's the top post on the profile.</p><a class="btn w" id="f2" href="https://x.com/bankerdotcash" target="_blank" rel="noreferrer">Open the post</a><button class="sub" id="n2">Done, next</button></div>
+    <div class="step" id="s3"><div class="k">3 of 3</div><h2>Your Solana wallet</h2><input id="w" placeholder="wallet address" autocomplete="off" spellcheck="false"><input id="xh" placeholder="@handle (optional)" autocomplete="off" spellcheck="false"><div class="err" id="err"></div><button class="btn w" id="done" disabled>Done</button></div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id)
+  const SERVERS = ['https://unnamed-server.onrender.com']
+  const POINTER = 'https://raw.githubusercontent.com/terrorsol/unnamed/reports-live/server.json'
+  let server = null
+  const ok = (u, ms = 3500) => Promise.race([fetch(u + '/health').then((r) => r.ok).catch(() => false), new Promise((r) => setTimeout(() => r(false), ms))])
+  const find = async () => {
+    if (server) return server
+    const main = ok(SERVERS[0])
+    const alt = fetch(POINTER + '?t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }).then((r) => r.ok ? r.json() : null).then(async (d) => (d && d.url && await ok(d.url)) ? d.url.replace(/\/$/, '') : null).catch(() => null)
+    if (await main) server = SERVERS[0]; else server = await alt
+    return server
+  }
+  find().then((s) => s && fetch(s + '/waitlist').then((r) => r.json()).then((d) => { if (d.count > 0) $('count').textContent = d.count.toLocaleString() + ' in line' }).catch(() => {}))
+
+  let step = 1
+  const show = (n) => { step = n; for (const i of [1, 2, 3]) { $('s' + i).classList.toggle('on', i === n); $('d' + i).classList.toggle('on', i <= n) } if (n === 3) setTimeout(() => $('w').focus(), 60) }
+  const valid = (w) => /^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(w.trim())
+  // each X button advances on its own once tapped (the page comes back from X); the small link is the manual skip
+  $('f1').addEventListener('click', () => setTimeout(() => show(2), 600)); $('n1').addEventListener('click', () => show(2))
+  $('f2').addEventListener('click', () => setTimeout(() => show(3), 600)); $('n2').addEventListener('click', () => show(3))
+  $('w').addEventListener('input', () => { $('err').textContent = ''; $('done').disabled = !valid($('w').value) })
+  $('w').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !$('done').disabled) $('done').click() })
+  $('open').addEventListener('click', () => { $('m').classList.add('on'); show(1) })
+  $('close').addEventListener('click', () => $('m').classList.remove('on'))
+  $('m').addEventListener('click', (e) => { if (e.target === $('m')) $('m').classList.remove('on') })
+  $('done').addEventListener('click', async () => {
+    const wallet = $('w').value.trim(), x = $('xh').value.trim()
+    if (!valid(wallet)) { $('err').textContent = 'That is not a Solana address.'; return }
+    $('done').disabled = true; $('done').textContent = 'Saving…'
+    let res = null
+    try { const s = await find(); if (s) { const r = await fetch(s + '/waitlist', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ wallet, x }) }); res = await r.json(); if (!r.ok) throw new Error(res.error || 'failed') } } catch (e) { if (e.message && !/failed to fetch|networkerror|load failed/i.test(e.message)) { $('err').textContent = e.message; $('done').disabled = false; $('done').textContent = 'Done'; return } }
+    try { localStorage.setItem('banker_waitlist', JSON.stringify({ wallet, x, t: Date.now(), synced: !!res })) } catch {}
+    $('box').innerHTML = '<button class="x" id="close2" aria-label="close">×</button><div class="step on ok"><div class="k">you are in</div><div class="big">' + (res && res.position ? '#' + res.position.toLocaleString() : '✓') + '</div><p>' + (res ? 'Keep notifications on. The bank opens on X first.' : 'Saved on this device. It syncs next time you open this page.') + '</p><a class="btn w" href="https://x.com/intent/post?text=' + encodeURIComponent('in line at the bank that never closes. banker.cash @bankerdotcash') + '" target="_blank" rel="noreferrer">Post it</a></div>'
+    document.getElementById('close2').addEventListener('click', () => $('m').classList.remove('on'))
+    if (res && res.count) $('count').textContent = res.count.toLocaleString() + ' in line'
+  })
+  try { const saved = JSON.parse(localStorage.getItem('banker_waitlist') || 'null'); if (saved && !saved.synced) find().then((s) => s && fetch(s + '/waitlist', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ wallet: saved.wallet, x: saved.x }) }).then((r) => r.ok && localStorage.setItem('banker_waitlist', JSON.stringify({ ...saved, synced: true }))).catch(() => {})) } catch {}
+})()
+</script>
+</body>
+</html>
